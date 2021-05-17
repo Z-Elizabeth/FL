@@ -223,11 +223,14 @@ void ScribbleArea::redraw(){
 
         int size = Arrow.listArrows.size();
         for(int i=0; i<size; i++){
-        QString str = "0|" + QString::number(Arrow.listArrows[i].first.x())+"|"
+            //if arrow length is not 0
+           if (Arrow.listArrows[i].first.x() != Arrow.listArrows[i].second.x() or Arrow.listArrows[i].first.y() != Arrow.listArrows[i].second.y()) {
+                QString str = "0|" + QString::number(Arrow.listArrows[i].first.x())+"|"
                     + QString::number(Arrow.listArrows[i].first.y()) + "|"
                     + QString::number(Arrow.listArrows[i].second.x())+"|"
                     + QString::number(Arrow.listArrows[i].second.y()) + "\n";
-        file.write(str.toUtf8());
+                file.write(str.toUtf8());
+            }
         }
 
         //file.write(QString::number(Arrow.numCurArrow).toUtf8());

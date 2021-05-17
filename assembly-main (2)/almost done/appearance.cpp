@@ -120,6 +120,8 @@ void Appearance::circlePenColor()
 
     if (newColor.isValid())
         Circle.setCirclePenColor(newColor);
+
+    scribbleArea->redraw();
 }
 
 void Appearance::circleWidth()
@@ -131,6 +133,8 @@ void Appearance::circleWidth()
     if (ok) {
         Circle.setCirclePenWidth(newWidth);
     }
+
+    scribbleArea->redraw();
 }
 
 void Appearance::circleBrushColor()
@@ -139,6 +143,8 @@ void Appearance::circleBrushColor()
 
     if (newColor.isValid())
         Circle.setCircleBrushColor(newColor);
+
+    scribbleArea->redraw();
 }
 
 void Appearance::arrowPenColor()
@@ -148,6 +154,8 @@ void Appearance::arrowPenColor()
     if (newColor.isValid()) {
         Arrow.setArrowPenColor(newColor);
     }
+
+    scribbleArea->redraw();
 }
 
 void Appearance::arrowWidth()
@@ -159,6 +167,8 @@ void Appearance::arrowWidth()
     if (ok) {
         Arrow.setArrowPenWidth(newWidth);
     }
+
+    scribbleArea->redraw();
 }
 
 bool Appearance::saveFile()
