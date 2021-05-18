@@ -14,22 +14,7 @@ tex::tex(QObject *parent)
     : QObject(parent)
 {}
 
-struct Round {
-    int x = 0;
-    int y = 0;
-    //string name;
-    int r = 0;
-};
-
-struct Line {
-    int x1 = 0;
-    int y1 = 0;
-    int x2 = 0;
-    int y2 = 0;
-    //string name;
-};
-
-float convertHexToTexDec(const char (&hex)[2]) {
+float tex::convertHexToTexDec(const char (&hex)[2]) {
     int dec = 0;
     for (int i = 0; i < 2; i++) {
         if (int(hex[i]) < 58) {
@@ -216,6 +201,9 @@ void tex::convertToTex() {
 
     }
 
+    output << "\\documentclass[12pt]{article}" << endl;
+    output << "\\usepackage{tikz}" << endl;
+    output << "\\begin{document}" << endl;
     output << "\\definecolor{arrowPenColor}{rgb}{" << arrowRed << ", " << arrowGreen << ", " << arrowBlue << "}" << endl;
     output << "\\definecolor{roundPenColor}{rgb}{" << roundRed << ", " << roundGreen << ", " << roundBlue << "}" << endl;
     output << "\\definecolor{roundBrushColor}{rgb}{" << roundBrushRed << ", " << roundBrushGreen << ", " << roundBrushBlue << "}" << endl;
@@ -233,5 +221,6 @@ void tex::convertToTex() {
     }
 
     output << "\t\\end{tikzpicture}" << endl << "\\end{center}" << endl;
+    output << "\\end{document}" << endl;
 
 }
