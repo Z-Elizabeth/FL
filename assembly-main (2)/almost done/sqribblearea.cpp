@@ -51,6 +51,8 @@ void ScribbleArea::clearImage()
     update();
 }
 
+void ScribbleArea::print() {}
+
 void ScribbleArea::clearScreen(){
     clearImage();
 
