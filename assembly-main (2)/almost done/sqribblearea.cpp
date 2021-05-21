@@ -71,18 +71,48 @@ void ScribbleArea::clearScreen()
      file.close();
 }
 
+QPoint ScribbleArea::findIntersection(const QPoint &point) {
+    QPoint endArrowPoint = point;
+    QPoint beginArrowPoint = Arrow.listArrows[Arrow.numCurArrow].first;
+    //Line equation: y = k * x + b
+    float k = (point.y() - beginArrowPoint.y())/(point.x() - beginArrowPoint.x());
+    float b = beginArrowPoint.y() - k*beginArrowPoint.x();
+    float x = 0;
+    for (auto elem : Circle.listCircles) {
+        if ((point.x() >= elem.first.x() - elem.second) && (point.x() <= elem.first.x() + elem.second)
+             && (point.y() >= elem.first.y() - elem.second) && (point.y() <= elem.first.y() + elem.second)) {
+            //Intersection equation: y = ax^2 + cx + e
+            float a = k * k + 1;
+            float c = 2 * (k * (b - elem.first.y()) - elem.first.x());
+            float e = - elem.second * elem.second - 2 * b * elem.first.y() + b * b + elem.first.y() * elem.first.y() + elem.first.x() * elem.first.x();
+            float D = c * c - 4 * a * e;
+            x = (- c + pow(D, 0.5)) / (2 * a);
+            if (x < std::min(point.x(), beginArrowPoint.x()) || x > std::max(point.x(), beginArrowPoint.x())) {
+                    x = (- c - pow(D, 0.5)) / (2 * a);
+            }
+            endArrowPoint.rx() = int(x);
+            endArrowPoint.ry() = int(k * x + b);
+            //endArrowPoint.setX(0);
+            //endArrowPoint.setY(0);
+        }
+    }
+    return endArrowPoint;
+}
+
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         Circle.setCircleLastPoint(event->pos());
-        Arrow.setArrowFirstPoint(event->pos());
+        //QPoint beginArrow;
+        //beginArrow = findIntersection(event->pos());
+        //Arrow.setArrowFirstPoint(event->pos());
         scribbling = true;
-        if(Circle.ifCircle){
+        if(Circle.ifCircle) {
             Circle.mousePressEventCircle();
             Sleep(500);
         }
-        if(Arrow.ifArrow){
-            Arrow.addBeginPointArrow();
+        if(Arrow.ifArrow) {
+            Arrow.addBeginPointArrow(event->pos());
             //Arrow.mousePressEventArrow();
         }
     }
@@ -105,20 +135,22 @@ void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
             Circle.changePosCircle(event->pos());
         }
     }
-    else if (((event->buttons() & Qt::LeftButton) && scribbling) && Arrow.ifArrow) {
-        drawLineTo(event->pos());
-    }
+    //else if (((event->buttons() & Qt::LeftButton) && scribbling) && Arrow.ifArrow) {
+        //drawLineTo(event->pos());
+    //}
 }
 
 void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
     if ((event->button() == Qt::LeftButton && scribbling && Circle.ifCircle) && !Circle.ifMarkCircle()) {
-        drawLineTo(event->pos());
+        //drawLineTo(event->pos());
         scribbling = false;
     }
 
     if ((event->button() == Qt::LeftButton && scribbling) && Arrow.ifArrow) {
-        drawLineTo(event->pos());
+        //drawLineTo(event->pos());
+        QPoint endArrow;
+        //endArrow = findIntersection(event->pos());
         Arrow.addEndPointArrow(event->pos());
         scribbling = false;
     }
@@ -182,12 +214,12 @@ void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
 
 void ScribbleArea::clickedCircleButton(){
     if(Circle.ifCircle) {Circle.ifCircle = false;}
-    else { Circle.ifCircle = true; Arrow.ifArrow = false;}
+    else { Circle.ifCircle = true; Arrow.ifArrow = false; }
 }
 
 void ScribbleArea::clickedArrowButton(){
     if(Arrow.ifArrow) {Arrow.ifArrow = false;}
-    else { Arrow.ifArrow = true; Circle.ifCircle = false;}
+    else { Arrow.ifArrow = true; Circle.ifCircle = false; }
 
 }
 
@@ -223,6 +255,12 @@ void ScribbleArea::redraw(){
     int size = Arrow.listArrows.size();
     for(int i=0;i<size;i++){
         painter.drawLine(Arrow.listArrows[i].first, Arrow.listArrows[i].second);
+        double alpha = atan((Arrow.listArrows[i].second.y() - Arrow.listArrows[i].first.y()) /
+                            (Arrow.listArrows[i].second.x() - Arrow.listArrows[i].first.x()));
+
+        painter.drawLine(Arrow.listArrows[i].second, {Arrow.listArrows[i].second.x() - int(10 * cos(0.52 + alpha)),
+                                                      Arrow.listArrows[i].second.y() - int(10 * sin(0.52 + alpha))});
+        //painter.drawLine(Arrow.listArrows[i].second, {Arrow.listArrows[i].second.x(), Arrow.listArrows[i].second.y() - 10});
     }
 
     //Draw circles
@@ -274,8 +312,6 @@ void ScribbleArea::redraw(){
             }
         }
 
-        //file.write(QString::number(Arrow.numCurArrow).toUtf8());
-
         size = Circle.listCircles.size();
         for(int i=0;i<size; i++){
             QString str = "1|" + Text.listCircleTexts[i].second + "|" + QString::number(Circle.listCircles[i].first.x())+"|"
@@ -283,16 +319,6 @@ void ScribbleArea::redraw(){
                     + QString::number(Circle.listCircles[i].second) + "\n";
             file.write(str.toUtf8());
         }
-
-        //file.write(QString::number(Circle.numCurCircle).toUtf8());
-
-        /*size = Circle.listRect.size();
-        if(size != 0){
-            QString str = QString::number(Circle.listRect[0].first.x())+" "
-                        + QString::number(Circle.listRect[0].first.y()) + " "
-                         + QString::number(Circle.listRect[0].second) + "\n";
-            file.write(str.toUtf8());
-        }*/
 
         file.close();
     }

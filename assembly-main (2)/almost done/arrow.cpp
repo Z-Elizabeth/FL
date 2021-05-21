@@ -62,11 +62,11 @@ void arrow::deleteArrow(int &i){
     Text.listArrowTexts.erase(Text.listArrowTexts.begin() + i);
 }
 
-void arrow::addBeginPointArrow() {
+void arrow::addBeginPointArrow(const QPoint &beginPoint) {
     QPoint point;
     point.setX(0);
     point.setY(0);
-    listArrows.push_back({getArrowFirstPoint(),point});
+    listArrows.push_back({beginPoint, point});
     numCurArrow = listArrows.size()-1;
 }
 

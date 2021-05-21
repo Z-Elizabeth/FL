@@ -18,7 +18,7 @@ public:
     void setArrowPenWidth(const int &newWidth);
     void clearArrows();
     void deleteArrow(int &i);
-    void addBeginPointArrow();
+    void addBeginPointArrow(const QPoint &beginPoint);
     void addEndPointArrow(const QPoint &endPoint);
     void mousePressEventArrow();
 

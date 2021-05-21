@@ -19,7 +19,7 @@ public:
 
     bool saveImage(const QString &fileName);
     void redraw();
-
+    QPoint findIntersection(const QPoint &point);
     bool isModified() const { return modified; }
 
 public slots:

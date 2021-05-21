@@ -1,20 +1,18 @@
 \documentclass[12pt]{article}
 \usepackage{tikz}
 \begin{document}
-\definecolor{arrowPenColor}{rgb}{0, 0, 0}
-\definecolor{roundPenColor}{rgb}{0, 0, 0.07}
-\definecolor{roundBrushColor}{rgb}{1, 1, 1}
-\definecolor{textColor}{rgb}{0, 0, 1}
+\definecolor{arrowPenColor}{rgb}{0.31, 0.42, 0.69}
+\definecolor{roundPenColor}{rgb}{0.19, 0.51, 0.51}
+\definecolor{roundBrushColor}{rgb}{0.69, 1, 0.47}
+\definecolor{textColor}{rgb}{0.51, 0.51, 0.28}
 \begin{center}
 	\begin{tikzpicture}[scale=0.03]
-		\draw [line width = 1, arrowPenColor] (158,-318) -- (257,-153);
-		\draw[textColor](207,-235) node [below] {$hg $};
-		\draw [line width = 1, arrowPenColor] (262,-138) -- (0,0);
-		\draw[textColor](131,-69) node [below] {$hg $};
-		\draw[line width = 1, roundPenColor, fill = roundBrushColor](136, -324) circle(25);
-		\draw[textColor](136, -324) node {$dfv$};
-		\draw[line width = 1, roundPenColor, fill = roundBrushColor](261, -146) circle(25);
-		\draw[textColor](261, -146) node {$hg $};
+		\draw [line width = 4, arrowPenColor] (123,-236) -- (269,-135);
+		\draw[textColor](196,-185) node [below] {$2$};
+		\draw[line width = 4, roundPenColor, fill = roundBrushColor](114, -236) circle(25);
+		\draw[textColor](114, -236) node {$1$};
+		\draw[line width = 4, roundPenColor, fill = roundBrushColor](269, -129) circle(25);
+		\draw[textColor](269, -129) node {$2$};
 	\end{tikzpicture}
 \end{center}
 \end{document}
