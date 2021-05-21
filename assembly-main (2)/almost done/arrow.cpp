@@ -53,13 +53,14 @@ void arrow::clearArrows() {
     int size = listArrows.size();
     for(int i=size-1; i>=0; i--) {
         listArrows.erase(listArrows.begin()+i);
+        listHeads.erase(listHeads.begin()+i);
     }
     numCurArrow = -1;
 }
 
 void arrow::deleteArrow(int &i){
     listArrows.erase(listArrows.begin()+i);
-    Text.listArrowTexts.erase(Text.listArrowTexts.begin() + i);
+    listHeads.erase(listHeads.begin()+i);
 }
 
 void arrow::addBeginPointArrow(const QPoint &beginPoint) {

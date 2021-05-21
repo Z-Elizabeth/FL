@@ -57,7 +57,7 @@ void circle::clearCircles() {
         listCircles.erase(listCircles.begin()+i);
     }
     size = listRect.size();
-    if (size>0){
+    if (size>0) {
        listRect.erase(listRect.begin());
     }
     numCurCircle = -1;

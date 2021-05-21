@@ -93,12 +93,37 @@ std::pair<QPoint, std::pair<QPoint, QPoint>> ScribbleArea::findIntersection(cons
     resultPoint.setX(int(x));
     resultPoint.setY(int(k * x + b));
 
-    //Arrow heads line equations: the angle is 45 degrees
-    /*float k_1 = tan(atan(k) + 0.785);
-    float k_2 = tan(atan(k) - 0.785);
-    float b_1 = 1.0 * endPoint.y() - k_1 * endPoint.x();
-    float b_2 = 1.0 * endPoint.y() - k_2 * endPoint.x();*/
+    //Arrow heads line equations: the angle is 0.6 rad
+    float k_1 = tan(atan(k) + 0.6);
+    float b_1 = 1.0 * resultPoint.y() - k_1 * resultPoint.x();
+    float a_1 = k_1 * k_1 + 1;
+    float c_1 = 2 * (k_1 * (b_1 - resultPoint.y()) - resultPoint.x());
+    float e_1 = - 400 - 2 * b_1 * resultPoint.y() + b_1 * b_1 + resultPoint.y() * resultPoint.y() + resultPoint.x() * resultPoint.x();
+    float D_1 = c_1 * c_1 - 4 * a_1 * e_1;
+    float x_1 = (- c_1 + pow(D_1, 0.5)) / (2 * a_1);
+    float y_1 = k_1 * x_1 + b_1;
+    if (x_1 <= std::min(beginPoint.x(), resultPoint.x()) || x >= std::max(beginPoint.x(), resultPoint.x())
+            || y_1 <= std::min(beginPoint.y(), resultPoint.y()) || y_1 >= std::max(beginPoint.y(), resultPoint.y())) {
+           x_1 = (- c_1 - pow(D_1, 0.5)) / (2 * a_1);
+    }
 
+    float k_2 = tan(atan(k) - 0.6);
+    float b_2 = 1.0 * resultPoint.y() - k_2 * resultPoint.x();
+    float a_2 = k_2 * k_2 + 1;
+    float c_2 = 2 * (k_2 * (b_2 - resultPoint.y()) - resultPoint.x());
+    float e_2 = - 400 - 2 * b_2 * resultPoint.y() + b_2 * b_2 + resultPoint.y() * resultPoint.y() + resultPoint.x() * resultPoint.x();
+    float D_2 = c_2 * c_2 - 4 * a_2 * e_2;
+    float x_2 = (- c_2 + pow(D_2, 0.5)) / (2 * a_2);
+    float y_2 = k_2 * x_2 + b_2;
+    if (x_2 <= std::min(beginPoint.x(), resultPoint.x()) || x >= std::max(beginPoint.x(), resultPoint.x())
+            || y_2 <= std::min(beginPoint.y(), resultPoint.y()) || y_2 >= std::max(beginPoint.y(), resultPoint.y())) {
+           x_2 = (- c_2 - pow(D_2, 0.5)) / (2 * a_2);
+    }
+
+    firstHead.setX(int(x_1));
+    firstHead.setY(int(y_1));
+    secondHead.setX(int(x_2));
+    secondHead.setY(int(y_2));
 
     //resultPoint.setX(0);
     //resultPoint.setY(0);
@@ -143,9 +168,10 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
     if ((event->button() == Qt::LeftButton && scribbling) && Arrow.ifArrow) {
         std::pair<QPoint, int> endArrowCircle = Circle.checkNearCircle(event->pos());
-        Arrow.addEndPointArrow(findIntersection(Arrow.listArrows[Arrow.numCurArrow].first, endArrowCircle.first, endArrowCircle.second).first);
-        //Arrow.listHeads[Arrow.numCurArrow] = findIntersection(Arrow.listArrows[Arrow.numCurArrow].first,
-                //endArrowCircle.first, endArrowCircle.second).second;
+        Arrow.addEndPointArrow(findIntersection(Arrow.listArrows[Arrow.numCurArrow].first,
+                               endArrowCircle.first, endArrowCircle.second).first);
+        Arrow.listHeads.push_back(findIntersection(Arrow.listArrows[Arrow.numCurArrow].first,
+                endArrowCircle.first, endArrowCircle.second).second);
         scribbling = false;
     }
     redraw();
@@ -249,11 +275,8 @@ void ScribbleArea::redraw(){
     int size = Arrow.listArrows.size();
     for(int i=0;i<size;i++){
         painter.drawLine(Arrow.listArrows[i].first, Arrow.listArrows[i].second);
-        double alpha = atan((Arrow.listArrows[i].second.y() - Arrow.listArrows[i].first.y()) /
-                            (Arrow.listArrows[i].second.x() - Arrow.listArrows[i].first.x()));
-
-        //painter.drawLine(Arrow.listArrows[i].second, {Arrow.listArrows[i].second.x() - int(10 * cos(0.52 + alpha)), Arrow.listArrows[i].second.y() - int(10 * sin(0.52 + alpha))});
-        //painter.drawLine(Arrow.listArrows[i].second, {Arrow.listArrows[i].second.x(), Arrow.listArrows[i].second.y() - 10});
+        painter.drawLine(Arrow.listArrows[i].second, Arrow.listHeads[i].first);
+        painter.drawLine(Arrow.listArrows[i].second, Arrow.listHeads[i].second);
     }
 
     //Draw circles
