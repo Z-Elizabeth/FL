@@ -25,6 +25,7 @@ public:
     void setCircleLastPoint(const QPoint &newPoint);
     void setCirclePenWidth(const int &newWidth);
 
+    std::pair<QPoint, int> checkNearCircle(const QPoint &point);
     QColor getCirclePenColor();
     QColor getCircleBrushColor();
     QPoint getCircleLastPoint();

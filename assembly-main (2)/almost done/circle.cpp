@@ -93,6 +93,17 @@ void circle::disMarkCircle(){
     numCurCircle=0;
 }
 
+std::pair<QPoint, int> circle::checkNearCircle(const QPoint &point) {
+    std::pair<QPoint, int> result = {point, 0};
+    for (auto elem : listCircles) {
+        if ((point.x() >= elem.first.x() - elem.second) && (point.x() <= elem.first.x() + elem.second)
+             && (point.y() >= elem.first.y() - elem.second) && (point.y() <= elem.first.y() + elem.second)) {
+            result = elem;
+        }
+    }
+    return result;
+}
+
 void circle::mousePressEventCircle() {
     circleParametrs = ifEmptyCircle(getCircleLastPoint());
 

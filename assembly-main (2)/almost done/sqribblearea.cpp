@@ -71,32 +71,38 @@ void ScribbleArea::clearScreen()
      file.close();
 }
 
-QPoint ScribbleArea::findIntersection(const QPoint &point) {
-    QPoint endArrowPoint = point;
-    QPoint beginArrowPoint = Arrow.listArrows[Arrow.numCurArrow].first;
+std::pair<QPoint, std::pair<QPoint, QPoint>> ScribbleArea::findIntersection(const QPoint &beginPoint, const QPoint &endPoint, int radius) {
+    QPoint resultPoint = endPoint;
+    QPoint firstHead = endPoint;
+    QPoint secondHead = endPoint;
+
     //Line equation: y = k * x + b
-    float k = (point.y() - beginArrowPoint.y())/(point.x() - beginArrowPoint.x());
-    float b = beginArrowPoint.y() - k*beginArrowPoint.x();
+    float k = (1.0*endPoint.y() - 1.0*beginPoint.y())/(1.0*endPoint.x() - 1.0*beginPoint.x());
+    float b = 1.0*beginPoint.y() - k*beginPoint.x();
     float x = 0;
-    for (auto elem : Circle.listCircles) {
-        if ((point.x() >= elem.first.x() - elem.second) && (point.x() <= elem.first.x() + elem.second)
-             && (point.y() >= elem.first.y() - elem.second) && (point.y() <= elem.first.y() + elem.second)) {
-            //Intersection equation: y = ax^2 + cx + e
-            float a = k * k + 1;
-            float c = 2 * (k * (b - elem.first.y()) - elem.first.x());
-            float e = - elem.second * elem.second - 2 * b * elem.first.y() + b * b + elem.first.y() * elem.first.y() + elem.first.x() * elem.first.x();
-            float D = c * c - 4 * a * e;
-            x = (- c + pow(D, 0.5)) / (2 * a);
-            if (x < std::min(point.x(), beginArrowPoint.x()) || x > std::max(point.x(), beginArrowPoint.x())) {
-                    x = (- c - pow(D, 0.5)) / (2 * a);
-            }
-            endArrowPoint.rx() = int(x);
-            endArrowPoint.ry() = int(k * x + b);
-            //endArrowPoint.setX(0);
-            //endArrowPoint.setY(0);
-        }
+
+    //Intersection equation: y = ax^2 + cx + e
+    float a = k * k + 1;
+    float c = 2 * (k * (b - endPoint.y()) - endPoint.x());
+    float e = - radius * radius - 2 * b * endPoint.y() + b * b + endPoint.y() * endPoint.y() + endPoint.x() * endPoint.x();
+    float D = c * c - 4 * a * e;
+    x = (- c + pow(D, 0.5)) / (2 * a);
+    if (x < std::min(beginPoint.x(), endPoint.x()) || x > std::max(beginPoint.x(), endPoint.x())) {
+           x = (- c - pow(D, 0.5)) / (2 * a);
     }
-    return endArrowPoint;
+    resultPoint.setX(int(x));
+    resultPoint.setY(int(k * x + b));
+
+    //Arrow heads line equations: the angle is 45 degrees
+    /*float k_1 = tan(atan(k) + 0.785);
+    float k_2 = tan(atan(k) - 0.785);
+    float b_1 = 1.0 * endPoint.y() - k_1 * endPoint.x();
+    float b_2 = 1.0 * endPoint.y() - k_2 * endPoint.x();*/
+
+
+    //resultPoint.setX(0);
+    //resultPoint.setY(0);
+    return {resultPoint, {firstHead, secondHead}};
 }
 
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
@@ -112,15 +118,11 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
             Sleep(500);
         }
         if(Arrow.ifArrow) {
-            Arrow.addBeginPointArrow(event->pos());
+            QPoint beginArrow = Circle.checkNearCircle(event->pos()).first;
+            Arrow.addBeginPointArrow(beginArrow);
             //Arrow.mousePressEventArrow();
         }
     }
-
-    /*if (event->button() == Qt::RightButton) {
-        Circle.setCircleLastPoint(event->pos());
-        Arrow.setArrowLastPoint(event->pos());
-    }*/
 }
 
 void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
@@ -135,23 +137,15 @@ void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
             Circle.changePosCircle(event->pos());
         }
     }
-    //else if (((event->buttons() & Qt::LeftButton) && scribbling) && Arrow.ifArrow) {
-        //drawLineTo(event->pos());
-    //}
 }
 
 void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
-    if ((event->button() == Qt::LeftButton && scribbling && Circle.ifCircle) && !Circle.ifMarkCircle()) {
-        //drawLineTo(event->pos());
-        scribbling = false;
-    }
-
     if ((event->button() == Qt::LeftButton && scribbling) && Arrow.ifArrow) {
-        //drawLineTo(event->pos());
-        QPoint endArrow;
-        //endArrow = findIntersection(event->pos());
-        Arrow.addEndPointArrow(event->pos());
+        std::pair<QPoint, int> endArrowCircle = Circle.checkNearCircle(event->pos());
+        Arrow.addEndPointArrow(findIntersection(Arrow.listArrows[Arrow.numCurArrow].first, endArrowCircle.first, endArrowCircle.second).first);
+        //Arrow.listHeads[Arrow.numCurArrow] = findIntersection(Arrow.listArrows[Arrow.numCurArrow].first,
+                //endArrowCircle.first, endArrowCircle.second).second;
         scribbling = false;
     }
     redraw();
@@ -258,8 +252,7 @@ void ScribbleArea::redraw(){
         double alpha = atan((Arrow.listArrows[i].second.y() - Arrow.listArrows[i].first.y()) /
                             (Arrow.listArrows[i].second.x() - Arrow.listArrows[i].first.x()));
 
-        painter.drawLine(Arrow.listArrows[i].second, {Arrow.listArrows[i].second.x() - int(10 * cos(0.52 + alpha)),
-                                                      Arrow.listArrows[i].second.y() - int(10 * sin(0.52 + alpha))});
+        //painter.drawLine(Arrow.listArrows[i].second, {Arrow.listArrows[i].second.x() - int(10 * cos(0.52 + alpha)), Arrow.listArrows[i].second.y() - int(10 * sin(0.52 + alpha))});
         //painter.drawLine(Arrow.listArrows[i].second, {Arrow.listArrows[i].second.x(), Arrow.listArrows[i].second.y() - 10});
     }
 

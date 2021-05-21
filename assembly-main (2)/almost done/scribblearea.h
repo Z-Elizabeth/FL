@@ -19,7 +19,7 @@ public:
 
     bool saveImage(const QString &fileName);
     void redraw();
-    QPoint findIntersection(const QPoint &point);
+    std::pair<QPoint, std::pair<QPoint, QPoint>> findIntersection(const QPoint &beginPoint, const QPoint &endPoint, int radius);
     bool isModified() const { return modified; }
 
 public slots:

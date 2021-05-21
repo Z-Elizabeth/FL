@@ -32,7 +32,7 @@ public:
     bool ifMarkArrow();
     std::vector<std::pair<QPoint,QPoint>> listArrows;
     void checkNearArrow(std::vector<std::pair<QPoint,int>> &rect);
-//    std::vector<std::pair<QPoint,int>> listRect;
+    std::vector<std::pair<QPoint, QPoint>> listHeads;
 
 
 private:
