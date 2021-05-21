@@ -15,7 +15,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     sqribblearea.cpp \
-    tex.cpp
+    tex.cpp \
+    text.cpp
 
 HEADERS += \
     appearance.h \
@@ -23,7 +24,8 @@ HEADERS += \
     circle.h \
     mainwindow.h \
     scribblearea.h \
-    tex.h
+    tex.h \
+    text.h
 
 FORMS += \
     mainwindow.ui

@@ -14,6 +14,9 @@
 #include "circle.h"
 #include "arrow.h"
 #include "windows.h"
+#include "text.h"
+
+
 
 ScribbleArea::ScribbleArea(QWidget *parent)
     : QWidget(parent)
@@ -28,6 +31,7 @@ ScribbleArea::ScribbleArea(QWidget *parent)
 
 circle Circle;
 arrow Arrow;
+text Text;
 
 bool ScribbleArea::saveImage(const QString &fileName)
 {
@@ -51,14 +55,15 @@ void ScribbleArea::clearImage()
     update();
 }
 
-void ScribbleArea::print() {}
-
-void ScribbleArea::clearScreen(){
+void ScribbleArea::clearScreen()
+{
     clearImage();
 
     Arrow.clearArrows();
 
     Circle.clearCircles();
+
+    Text.clearTexts();
 
      //QFile file(QDir::currentPath()+"/text.txt");
      QFile file("../../../text.txt");
@@ -78,8 +83,10 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
         }
         if(Arrow.ifArrow){
             Arrow.addBeginPointArrow();
+            //Arrow.mousePressEventArrow();
         }
     }
+
     /*if (event->button() == Qt::RightButton) {
         Circle.setCircleLastPoint(event->pos());
         Arrow.setArrowLastPoint(event->pos());
@@ -119,13 +126,13 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 }
 
 void ScribbleArea::mouseDoubleClickEvent(QMouseEvent *event) {
-    /*if (event->button() == Qt::LeftButton && Circle.ifCircle) {
+/*    if (event->button() == Qt::LeftButton && Circle.ifCircle) {
         QPainter painter(this);
         painter.setBrush(Qt::white);
         painter.drawEllipse(event->pos(), 10, 10);
     }
-    paintEvent();*/
-}
+    paintEvent();
+*/}
 
 void ScribbleArea::paintEvent(QPaintEvent *event)
 {
@@ -184,14 +191,33 @@ void ScribbleArea::clickedArrowButton(){
 
 }
 
-void ScribbleArea::clickedDeleteButton(){
+void ScribbleArea::clickedDeleteButton()
+{
+/*    circle->setAutoExclusive(false);
+    circle->setChecked(false);
+    circle->setAutoExclusive(true);
+    arrow->setAutoExclusive(false);
+    arrow->setChecked(false);
+    arrow->setAutoExclusive(true);
+*/
+
     //Circle.deleteCircle();
-    //Arrow.deleteArrow();
+    if (Circle.ifMarkCircle()) {
+        Circle.listCircles.erase(Circle.listCircles.begin() + Circle.numCurCircle);
+        Text.listCircleTexts.erase(Text.listCircleTexts.begin() + Circle.numCurCircle);
+        Arrow.checkNearArrow(Circle.listRect);
+        Circle.listRect.erase(Circle.listRect.begin());
+        modified = true;
+    }
+    redraw();
+
 }
 
 void ScribbleArea::redraw(){
     clearImage();
     QPainter painter(&image);
+
+    //Draw arrows
     painter.setPen(QPen(Arrow.getArrowPenColor(), Arrow.getArrowPenWidth()+1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.setRenderHint(QPainter::Antialiasing, true);
     int size = Arrow.listArrows.size();
@@ -199,6 +225,7 @@ void ScribbleArea::redraw(){
         painter.drawLine(Arrow.listArrows[i].first, Arrow.listArrows[i].second);
     }
 
+    //Draw circles
     painter.setPen(QPen(Circle.getCirclePenColor(), Circle.getCirclePenWidth()+1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.setBrush(Circle.getCircleBrushColor());
     size = Circle.listCircles.size();
@@ -206,6 +233,7 @@ void ScribbleArea::redraw(){
         painter.drawEllipse(Circle.listCircles[i].first, Circle.listCircles[i].second, Circle.listCircles[i].second);
     }
 
+    //Draw rectangle which marks a circle
     painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.setBrush(QBrush (Qt::transparent));
     size = Circle.listRect.size();
@@ -213,6 +241,17 @@ void ScribbleArea::redraw(){
         painter.drawRect(Circle.listRect[0].first.x(), Circle.listRect[0].first.y(), Circle.listRect[0].second, Circle.listRect[0].second);
     }
 
+    //Draw texts
+    painter.setPen(QPen(Text.getTextColor(), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    for(int i = 0; i < Text.listArrowTexts.size(); i++) {
+       painter.drawText(Text.listArrowTexts[i].first, Text.listArrowTexts[i].second);
+    }
+
+    for(int i = 0; i < Text.listCircleTexts.size(); i++) {
+        painter.drawText(Text.listCircleTexts[i].first, Text.listCircleTexts[i].second);
+    }
+
+    //Rewrite text file
     //QFile file(QDir::currentPath()+"/text.txt");
     QFile file("../../../text.txt");
     if (file.open(QIODevice::WriteOnly))
@@ -220,14 +259,14 @@ void ScribbleArea::redraw(){
         //circle pen color, arrow color, circle brush color, circle width, arrow width
         QString str = Circle.getCirclePenColor().name()+"|"+Circle.getCircleBrushColor().name()+"|"
                 +QString::number(Circle.getCirclePenWidth())+"|"+Arrow.getArrowPenColor().name()+"|"
-                +QString::number(Arrow.getArrowPenWidth())+"\n";
+                +QString::number(Arrow.getArrowPenWidth())+ "|" + Text.getTextColor().name() + "\n";
         file.write(str.toUtf8());
 
         int size = Arrow.listArrows.size();
         for(int i=0; i<size; i++){
             //if arrow length is not 0
            if (Arrow.listArrows[i].first.x() != Arrow.listArrows[i].second.x() or Arrow.listArrows[i].first.y() != Arrow.listArrows[i].second.y()) {
-                QString str = "0|" + QString::number(Arrow.listArrows[i].first.x())+"|"
+                QString str = "0|" + Text.listArrowTexts[i].second + "|" + QString::number(Arrow.listArrows[i].first.x())+"|"
                     + QString::number(Arrow.listArrows[i].first.y()) + "|"
                     + QString::number(Arrow.listArrows[i].second.x())+"|"
                     + QString::number(Arrow.listArrows[i].second.y()) + "\n";
@@ -239,10 +278,10 @@ void ScribbleArea::redraw(){
 
         size = Circle.listCircles.size();
         for(int i=0;i<size; i++){
-        QString str = "1|" + QString::number(Circle.listCircles[i].first.x())+"|"
+            QString str = "1|" + Text.listCircleTexts[i].second + "|" + QString::number(Circle.listCircles[i].first.x())+"|"
                     + QString::number(Circle.listCircles[i].first.y()) + "|"
-                     + QString::number(Circle.listCircles[i].second) + "\n";
-        file.write(str.toUtf8());
+                    + QString::number(Circle.listCircles[i].second) + "\n";
+            file.write(str.toUtf8());
         }
 
         //file.write(QString::number(Circle.numCurCircle).toUtf8());

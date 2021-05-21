@@ -1,7 +1,9 @@
+#pragma once
 #ifndef ARROW_H
 #define ARROW_H
 #include <QApplication>
 #include <QWidget>
+#include <QPoint>
 
 
 class arrow : public QObject
@@ -15,9 +17,10 @@ public:
     void setArrowFirstPoint(const QPoint &newPoint);
     void setArrowPenWidth(const int &newWidth);
     void clearArrows();
-    void deleteArrow();
+    void deleteArrow(int &i);
     void addBeginPointArrow();
     void addEndPointArrow(const QPoint &endPoint);
+    void mousePressEventArrow();
 
     QColor getArrowPenColor();
     QPoint getArrowLastPoint();
@@ -28,13 +31,17 @@ public:
     bool ifArrow;
     bool ifMarkArrow();
     std::vector<std::pair<QPoint,QPoint>> listArrows;
+    void checkNearArrow(std::vector<std::pair<QPoint,int>> &rect);
+//    std::vector<std::pair<QPoint,int>> listRect;
+
 
 private:
     QColor ArrowPenColor;
     QPoint ArrowLastPoint;
     QPoint ArrowFirstPoint;
     int ArrowPenWidth;
-
+    void markArrow(const std::vector<int> &parametrs);
+    void disMarkArrow();
 };
 
 #endif // ARROW_H

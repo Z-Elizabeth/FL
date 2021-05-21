@@ -38,8 +38,8 @@ void tex::convertToTex() {
 
     ofstream output("../../../output.txt");
     ifstream input ("../../../text.txt");
-    //string name;
 
+    string name;
     string ifRound_string;
     string x1_string;
     string x2_string;
@@ -75,6 +75,13 @@ void tex::convertToTex() {
     float arrowBlue;
     string arrowWidth_str;
     float arrowWidth;
+    string textColor;
+    char textRed_c[2];
+    char textGreen_c[2];
+    char textBlue_c[2];
+    float textRed;
+    float textGreen;
+    float textBlue;
 
     if (input.is_open()) {
 
@@ -122,13 +129,25 @@ void tex::convertToTex() {
         arrowGreen = convertHexToTexDec(arrowGreen_c);
         arrowBlue = convertHexToTexDec(arrowBlue_c);
 
-        getline(input, arrowWidth_str, '\n');
+        getline(input, arrowWidth_str, '|');
 
         for (int i = 0; i < arrowWidth_str.size(); i++) {
                 int a = pow(10, arrowWidth_str.size() - i - 1);
                 arrowWidth += a * (int(arrowWidth_str[i] - '0'));
         }
         arrowWidth = arrowWidth;
+
+        getline(input, textColor, '\n');
+        textRed_c[0] = textColor[1];
+        textRed_c[1] = textColor[2];
+        textGreen_c[0] = textColor[3];
+        textGreen_c[1] = textColor[4];
+        textBlue_c[0] = textColor[5];
+        textBlue_c[1] = textColor[6];
+        //convert to TeX color rgb format
+        textRed = convertHexToTexDec(textRed_c);
+        textGreen = convertHexToTexDec(textGreen_c);
+        textBlue = convertHexToTexDec(textBlue_c);
 
     }
 
@@ -137,7 +156,7 @@ void tex::convertToTex() {
 
         if (ifRound_string == "0") {
             struct Line line;
-            //getline(input, name, '|');
+            getline(input, name, '|');
             getline(input, x1_string, '|');
             getline(input, y1_string, '|');
             getline(input, x2_string, '|');
@@ -164,12 +183,13 @@ void tex::convertToTex() {
                 line.y2 += a * (int(y2_string[i] - '0'));
             }
             line.y2 = -line.y2;
-            //l.name = name;
+            line.name = name;
 
             lines.push_back(line);
         }
 
         else if (ifRound_string == "1") {
+            getline(input, name, '|');
             getline(input, x1_string, '|');
             getline(input, y1_string, '|');
             getline(input, r_string, '\n');
@@ -192,7 +212,7 @@ void tex::convertToTex() {
                 round.r += a * (int(r_string[i] - '0'));
             }
 
-            //cir.name = name;
+            round.name = name;
             //cir.color = y2_string;
 
             rounds.push_back(round);
@@ -207,17 +227,23 @@ void tex::convertToTex() {
     output << "\\definecolor{arrowPenColor}{rgb}{" << arrowRed << ", " << arrowGreen << ", " << arrowBlue << "}" << endl;
     output << "\\definecolor{roundPenColor}{rgb}{" << roundRed << ", " << roundGreen << ", " << roundBlue << "}" << endl;
     output << "\\definecolor{roundBrushColor}{rgb}{" << roundBrushRed << ", " << roundBrushGreen << ", " << roundBrushBlue << "}" << endl;
+    output << "\\definecolor{textColor}{rgb}{" << textRed << ", " << textGreen << ", " << textBlue << "}" << endl;
     output << "\\begin{center}\n\t\\begin{tikzpicture}[scale=0.03]" << endl;
 
     for (auto el : lines) {
+        //double alpha = atan((el.y2 - el.y1) / (el.x2 - el.x1));
         output << "\t\t\\draw [line width = " << arrowWidth << ", arrowPenColor] (" <<
                                                         el.x1 << "," << el.y1 << ") -- (" << el.x2 << "," << el.y2 << ");" << endl;
+        output << "\t\t\\draw[textColor](" << (el.x2 + el.x1)/2 << "," << (el.y2 + el.y1)/2 << ") node [below] {$" << el.name << "$};" << endl;
+        //output << "\t\t\\fill [black] (" << el.x2 << "," << el.y2 << ") -- (" << el.x2 - cos(0.52 + alpha) << "," << el.y2 - sin(0.52 + alpha)
+               //<< ") -- (" << el.x2 - cos(alpha - 0.52) << "," << el.y2 - sin(alpha - 0.52) << ");" << endl;
     }
 
     for (auto el : rounds) {
 
         output << "\t\t\\draw[line width = " << roundWidth << ", roundPenColor, fill = roundBrushColor](" << el.x <<
                                                         ", " << el.y << ") circle(" << el.r << ");\n";
+        output << "\t\t\\draw[textColor](" << el.x << ", " << el.y << ") node {$" << el.name << "$};" << endl;
     }
 
     output << "\t\\end{tikzpicture}" << endl << "\\end{center}" << endl;

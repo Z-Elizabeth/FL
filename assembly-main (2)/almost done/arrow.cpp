@@ -1,5 +1,7 @@
 #include "arrow.h"
+#include "text.h"
 #include <QApplication>
+
 
 arrow::arrow(QObject *parent)
     : QObject(parent)
@@ -9,6 +11,8 @@ arrow::arrow(QObject *parent)
     numCurArrow=-1;
     ArrowPenWidth = 1;
 }
+
+extern text Text;
 
 QColor arrow::getArrowPenColor() {
     return ArrowPenColor;
@@ -53,18 +57,10 @@ void arrow::clearArrows() {
     numCurArrow = -1;
 }
 
-bool arrow::ifMarkArrow(){
-    //Был listRect
-    if (listArrows.size() == 0) return false;
-    else return true;
+void arrow::deleteArrow(int &i){
+    listArrows.erase(listArrows.begin()+i);
+    Text.listArrowTexts.erase(Text.listArrowTexts.begin() + i);
 }
-
-/*void arrow::deleteArrow() {
-    if (ifMarkArrow()) {
-        listArrows.erase(listArrows.begin() + numCurArrow);
-        //listRect.erase(listRect.begin());
-    }
-}*/
 
 void arrow::addBeginPointArrow() {
     QPoint point;
@@ -75,5 +71,28 @@ void arrow::addBeginPointArrow() {
 }
 
 void arrow::addEndPointArrow(const QPoint &endPoint) {
-    listArrows[numCurArrow].second = endPoint;
+    QPoint point;
+    point.setX(0);
+    point.setY(0);
+    if (listArrows[numCurArrow].first != endPoint && listArrows[numCurArrow].second == point) {
+        listArrows[numCurArrow].second = endPoint;
+    }
+    QPoint textLocation;
+    textLocation.rx() = int(0.5*(listArrows[numCurArrow].first.rx()+listArrows[numCurArrow].second.rx()))+20;
+    textLocation.ry() = int(0.5*(listArrows[numCurArrow].first.ry()+listArrows[numCurArrow].second.ry()))+20;
+    Text.listArrowTexts.push_back({textLocation, Text.getTextString()});
+}
+
+void arrow::checkNearArrow(std::vector<std::pair<QPoint,int>> &rect) {
+    int size = listArrows.size();
+    if(size > 0){
+        for(int i = 0; i < size; i++){
+            if (((listArrows[i].first.x() >= rect[0].first.x()) && (listArrows[i].first.x() <= rect[0].first.x() + rect[0].second)
+                 && (listArrows[i].first.y() >= rect[0].first.y()) && (listArrows[i].first.y() <= rect[0].first.y() + rect[0].second))
+                    || ((listArrows[i].second.x() >= rect[0].first.x()) && (listArrows[i].second.x() <= rect[0].first.x() + rect[0].second)
+                        && (listArrows[i].second.y() >= rect[0].first.y()) && (listArrows[i].second.y() <= rect[0].first.y() + rect[0].second))) {
+                deleteArrow(i);
+            }
+        }
+    }
 }

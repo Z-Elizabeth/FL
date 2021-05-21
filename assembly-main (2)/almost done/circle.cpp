@@ -1,4 +1,5 @@
 #include "circle.h"
+#include "text.h"
 #include <QApplication>
 #include <QtWidgets>
 
@@ -12,6 +13,8 @@ circle::circle(QObject *parent)
     std::vector<int> circleParametrs;
     ifCircle = false;
 }
+
+extern text Text;
 
 QColor circle::getCirclePenColor() {
     return CirclePenColor;
@@ -64,17 +67,11 @@ void circle::drawNewCircle(const QPoint &endPoint) {
     int radius = 25;
     std::pair<QPoint,int> oneMore(endPoint,radius);
     listCircles.push_back(oneMore);
-    //modified = true;
-    //redraw();
+    QPoint text_location;
+    text_location.rx() = int(endPoint.x() - 10);
+    text_location.ry() = int(endPoint.y() - 5);
+    Text.listCircleTexts.push_back({text_location, Text.getTextString()});
 }
-
-/*void circle::deleteCircle(){
-    if (ifMarkCircle()) {
-        listCircles.erase(listCircles.begin() + numCurCircle);
-        listRect.erase(listRect.begin());
-    }
-    //redraw();
-}*/
 
 void circle::markCircle(const std::vector<int> &parametrs){
     int radius = parametrs[3];
@@ -94,7 +91,6 @@ bool circle::ifMarkCircle(){
 void circle::disMarkCircle(){
     listRect.erase(listRect.begin());
     numCurCircle=0;
-    //redraw();
 }
 
 void circle::mousePressEventCircle() {
@@ -140,6 +136,8 @@ void circle::changePosCircle(const QPoint &endPoint){
     point.setX(listCircles[numCurCircle].first.x()-listCircles[numCurCircle].second);
     point.setY(listCircles[numCurCircle].first.y()-listCircles[numCurCircle].second);
     listRect[0].first = point;
-    //redrawCircle();
     setCircleLastPoint(endPoint);
+    Text.listCircleTexts[numCurCircle].first.rx() = endPoint.x() - 10;
+    Text.listCircleTexts[numCurCircle].first.ry() = endPoint.y() - 5;
 }
+

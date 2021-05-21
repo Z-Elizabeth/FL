@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SCRIBBLEAREA_H
 #define SCRIBBLEAREA_H
 
@@ -7,6 +8,7 @@
 #include <QWidget>
 #include <vector>
 #include <utility>
+#include <QRadioButton>
 
 class ScribbleArea : public QWidget
 {
@@ -23,7 +25,6 @@ public:
 public slots:
 
     void clearScreen();
-    void print();
     void clickedCircleButton();
     void clickedArrowButton();
     void clickedDeleteButton();

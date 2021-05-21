@@ -3,6 +3,7 @@
 #include "arrow.h"
 #include "scribblearea.h"
 #include "tex.h"
+#include "text.h"
 #include <iostream>
 
 Appearance::Appearance(QWidget *parent): QMainWindow(parent){
@@ -19,6 +20,7 @@ Appearance::Appearance(QWidget *parent): QMainWindow(parent){
 
 extern circle Circle;
 extern arrow Arrow;
+extern text Text;
 
 void Appearance::createMenus(){
 
@@ -41,6 +43,9 @@ void Appearance::createMenus(){
     arrowWidthAct = new QAction("Arrow Width",this);
     connect(arrowWidthAct, SIGNAL(triggered()), this, SLOT(arrowWidth()));
 
+    textColorAct = new QAction("Text Color", this);
+    connect(textColorAct, SIGNAL(triggered()), this, SLOT(textColor()));
+
     saveAct = new QAction("Save as image", this);
     saveAct->setShortcut(tr("Ctrl+Shift+S"));
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
@@ -59,6 +64,7 @@ void Appearance::createMenus(){
     optionMenu->addAction(circleWidthAct);
     optionMenu->addAction(arrowPenColorAct);
     optionMenu->addAction(arrowWidthAct);
+    optionMenu->addAction(textColorAct);
 
     menuBar()->addMenu(file);
     menuBar()->addMenu(optionMenu);
@@ -83,10 +89,16 @@ void Appearance::createTools(){
     deleteBut->setChecked(false);
     connect(deleteBut, SIGNAL(clicked()), scribbleArea, SLOT(clickedDeleteButton()));
 
+    setTextButton = new QPushButton(tr("&Set Text"), this);
+    setTextButton->setCheckable(false);
+    setTextButton->setChecked(false);
+    connect(setTextButton, SIGNAL(clicked()), this, SLOT(clickedSetTextButton()));
+
     toolbar = addToolBar("main toolbar");
     toolbar->addWidget(circle);
     toolbar->addWidget(arrow);
     toolbar->addWidget(deleteBut);
+    toolbar->addWidget(setTextButton);
 }
 
 bool Appearance::maybeSave()
@@ -169,6 +181,23 @@ void Appearance::arrowWidth()
     }
 
     scribbleArea->redraw();
+}
+
+void Appearance::textColor() {
+    QColor newColor = QColorDialog::getColor();
+
+    if (newColor.isValid()) {
+        Text.setTextColor(newColor);
+    }
+
+    scribbleArea->redraw();
+}
+
+void Appearance::clickedSetTextButton() {
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Set Text"),
+                                  tr("Text:"), QLineEdit::Normal, "", &ok);
+    Text.setTextString(text);
 }
 
 bool Appearance::saveFile()

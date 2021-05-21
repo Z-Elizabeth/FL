@@ -1,0 +1,20 @@
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\definecolor{arrowPenColor}{rgb}{0, 0, 0}
+\definecolor{roundPenColor}{rgb}{0, 0, 0.07}
+\definecolor{roundBrushColor}{rgb}{1, 1, 1}
+\definecolor{textColor}{rgb}{0, 0, 1}
+\begin{center}
+	\begin{tikzpicture}[scale=0.03]
+		\draw [line width = 1, arrowPenColor] (158,-318) -- (257,-153);
+		\draw[textColor](207,-235) node [below] {$hg $};
+		\draw [line width = 1, arrowPenColor] (262,-138) -- (0,0);
+		\draw[textColor](131,-69) node [below] {$hg $};
+		\draw[line width = 1, roundPenColor, fill = roundBrushColor](136, -324) circle(25);
+		\draw[textColor](136, -324) node {$dfv$};
+		\draw[line width = 1, roundPenColor, fill = roundBrushColor](261, -146) circle(25);
+		\draw[textColor](261, -146) node {$hg $};
+	\end{tikzpicture}
+\end{center}
+\end{document}

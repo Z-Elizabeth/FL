@@ -5,9 +5,11 @@ release/main.o
 release/mainwindow.o
 release/sqribblearea.o
 release/tex.o
+release/text.o
 release/moc_appearance.o
 release/moc_arrow.o
 release/moc_circle.o
 release/moc_mainwindow.o
 release/moc_scribblearea.o
 release/moc_tex.o
+release/moc_text.o

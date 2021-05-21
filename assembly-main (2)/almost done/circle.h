@@ -1,3 +1,4 @@
+#pragma once
 #ifndef CIRCLE_H
 #define CIRCLE_H
 #include <QApplication>
@@ -19,7 +20,6 @@ public:
     void mousePressEventCircle();
     void changeSizeCircle(const QPoint &endPoint);
     void changePosCircle(const QPoint &endPoint);
-    void deleteCircle();
     void setCirclePenColor(const QColor &newColor);
     void setCircleBrushColor(const QColor &newColor);
     void setCircleLastPoint(const QPoint &newPoint);
@@ -47,6 +47,7 @@ private:
     int CirclePenWidth;
     std::vector<int> ifEmptyCircle(const QPoint &endPoint);
     std::vector<int> circleParametrs;
+
 };
 
 #endif // CIRCLE_H

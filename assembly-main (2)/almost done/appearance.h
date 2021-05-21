@@ -1,3 +1,4 @@
+#pragma once
 #ifndef APPEARANCE_H
 #define APPEARANCE_H
 
@@ -25,8 +26,10 @@ private slots:
     void circleBrushColor();
     void arrowPenColor();
     void arrowWidth();
+    void textColor();
     bool maybeSave();
     void closeEvent(QCloseEvent *event);
+    void clickedSetTextButton();
     bool saveFile();
 
 private:
@@ -44,12 +47,14 @@ private:
     QAction *circleWidthAct;
     QAction *arrowPenColorAct;
     QAction *arrowWidthAct;
+    QAction *textColorAct;
     QAction *saveAct;
     QAction *saveToTexAct;
     QToolBar *toolbar;
     QRadioButton *circle;
     QRadioButton *arrow;
     QPushButton *deleteBut;
+    QPushButton *setTextButton;
 
 };
 

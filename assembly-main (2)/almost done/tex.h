@@ -1,3 +1,4 @@
+#pragma once
 #ifndef TEX_H
 #define TEX_H
 #include <QApplication>
@@ -20,7 +21,7 @@ private:
     struct Round {
         int x = 0;
         int y = 0;
-        //string name;
+        string name;
         int r = 0;
     };
 
@@ -29,7 +30,7 @@ private:
         int y1 = 0;
         int x2 = 0;
         int y2 = 0;
-        //string name;
+        string name;
     };
 
 };
