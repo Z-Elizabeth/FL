@@ -93,32 +93,28 @@ std::pair<QPoint, std::pair<QPoint, QPoint>> ScribbleArea::findIntersection(cons
     resultPoint.setX(int(x));
     resultPoint.setY(int(k * x + b));
 
-    //Arrow heads line equations: the angle is 0.6 rad
     float k_1 = tan(atan(k) + 0.6);
     float b_1 = 1.0 * resultPoint.y() - k_1 * resultPoint.x();
-    float a_1 = k_1 * k_1 + 1;
-    float c_1 = 2 * (k_1 * (b_1 - resultPoint.y()) - resultPoint.x());
-    float e_1 = - 400 - 2 * b_1 * resultPoint.y() + b_1 * b_1 + resultPoint.y() * resultPoint.y() + resultPoint.x() * resultPoint.x();
-    float D_1 = c_1 * c_1 - 4 * a_1 * e_1;
-    float x_1 = (- c_1 + pow(D_1, 0.5)) / (2 * a_1);
-    float y_1 = k_1 * x_1 + b_1;
-    if (x_1 <= std::min(beginPoint.x(), resultPoint.x()) || x >= std::max(beginPoint.x(), resultPoint.x())
-            || y_1 <= std::min(beginPoint.y(), resultPoint.y()) || y_1 >= std::max(beginPoint.y(), resultPoint.y())) {
-           x_1 = (- c_1 - pow(D_1, 0.5)) / (2 * a_1);
+
+    float k_2 = tan(atan(k) - 0.6 + 3.14);
+    float b_2 = 1.0 * resultPoint.y() - k_2 * resultPoint.x();
+
+    float x_2 = 0;
+    float x_1 = 0;
+
+    if ((beginPoint.x() - resultPoint.x() > 0) ){
+
+        x_2 = ((-20 * sin(0.6) * sqrt(1 + pow(k, 2)) - (b_2 - b)) /(k_2 - k));
+        x_1 = ((20 * sin(0.6) * sqrt(1 + pow(k, 2)) - (b_1 - b)) /(k_1 - k));
     }
 
-    float k_2 = tan(atan(k) - 0.6);
-    float b_2 = 1.0 * resultPoint.y() - k_2 * resultPoint.x();
-    float a_2 = k_2 * k_2 + 1;
-    float c_2 = 2 * (k_2 * (b_2 - resultPoint.y()) - resultPoint.x());
-    float e_2 = - 400 - 2 * b_2 * resultPoint.y() + b_2 * b_2 + resultPoint.y() * resultPoint.y() + resultPoint.x() * resultPoint.x();
-    float D_2 = c_2 * c_2 - 4 * a_2 * e_2;
-    float x_2 = (- c_2 + pow(D_2, 0.5)) / (2 * a_2);
-    float y_2 = k_2 * x_2 + b_2;
-    if (x_2 <= std::min(beginPoint.x(), resultPoint.x()) || x >= std::max(beginPoint.x(), resultPoint.x())
-            || y_2 <= std::min(beginPoint.y(), resultPoint.y()) || y_2 >= std::max(beginPoint.y(), resultPoint.y())) {
-           x_2 = (- c_2 - pow(D_2, 0.5)) / (2 * a_2);
+    else{
+        x_2 = ((20 * sin(0.6) * sqrt(1 + pow(k, 2)) - (b_2 - b)) /(k_2 - k));
+        x_1 = ((-20 * sin(0.6) * sqrt(1 + pow(k, 2)) - (b_1 - b)) /(k_1 - k));
+
     }
+    float y_2 = k_2 * x_2 + b_2;
+    float y_1 = k_1 * x_1 + b_1;
 
     firstHead.setX(int(x_1));
     firstHead.setY(int(y_1));
@@ -130,6 +126,7 @@ std::pair<QPoint, std::pair<QPoint, QPoint>> ScribbleArea::findIntersection(cons
     return {resultPoint, {firstHead, secondHead}};
 }
 
+
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
@@ -140,7 +137,7 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
         scribbling = true;
         if(Circle.ifCircle) {
             Circle.mousePressEventCircle();
-            Sleep(500);
+            //Sleep(500);
         }
         if(Arrow.ifArrow) {
             QPoint beginArrow = Circle.checkNearCircle(event->pos()).first;
@@ -184,7 +181,8 @@ void ScribbleArea::mouseDoubleClickEvent(QMouseEvent *event) {
         painter.drawEllipse(event->pos(), 10, 10);
     }
     paintEvent();
-*/}
+*/
+}
 
 void ScribbleArea::paintEvent(QPaintEvent *event)
 {
@@ -296,12 +294,15 @@ void ScribbleArea::redraw(){
     }
 
     //Draw texts
-    painter.setPen(QPen(Text.getTextColor(), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    for(int i = 0; i < Text.listArrowTexts.size(); i++) {
+    painter.setPen(QPen(Text.getArrowTextColor(), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    size = Text.listArrowTexts.size();
+    for(int i = 0; i < size; i++) {
        painter.drawText(Text.listArrowTexts[i].first, Text.listArrowTexts[i].second);
     }
 
-    for(int i = 0; i < Text.listCircleTexts.size(); i++) {
+    painter.setPen(QPen(Text.getCircleTextColor(), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    size = Text.listCircleTexts.size();
+    for(int i = 0; i < size; i++) {
         painter.drawText(Text.listCircleTexts[i].first, Text.listCircleTexts[i].second);
     }
 
@@ -313,7 +314,8 @@ void ScribbleArea::redraw(){
         //circle pen color, arrow color, circle brush color, circle width, arrow width
         QString str = Circle.getCirclePenColor().name()+"|"+Circle.getCircleBrushColor().name()+"|"
                 +QString::number(Circle.getCirclePenWidth())+"|"+Arrow.getArrowPenColor().name()+"|"
-                +QString::number(Arrow.getArrowPenWidth())+ "|" + Text.getTextColor().name() + "\n";
+                +QString::number(Arrow.getArrowPenWidth())+ "|" + Text.getCircleTextColor().name() + "|"
+                + Text.getArrowTextColor().name() + "\n";
         file.write(str.toUtf8());
 
         int size = Arrow.listArrows.size();
@@ -323,7 +325,11 @@ void ScribbleArea::redraw(){
                 QString str = "0|" + Text.listArrowTexts[i].second + "|" + QString::number(Arrow.listArrows[i].first.x())+"|"
                     + QString::number(Arrow.listArrows[i].first.y()) + "|"
                     + QString::number(Arrow.listArrows[i].second.x())+"|"
-                    + QString::number(Arrow.listArrows[i].second.y()) + "\n";
+                    + QString::number(Arrow.listArrows[i].second.y()) + "|"
+                    + QString::number(Arrow.listHeads[i].first.x()) + "|"
+                    + QString::number(Arrow.listHeads[i].first.y()) + "|"
+                    + QString::number(Arrow.listHeads[i].second.x()) + "|"
+                    + QString::number(Arrow.listHeads[i].second.y()) + "\n";
                 file.write(str.toUtf8());
             }
         }

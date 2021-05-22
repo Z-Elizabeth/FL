@@ -31,6 +31,10 @@ private:
         int x2 = 0;
         int y2 = 0;
         string name;
+        int head_x1 = 0;
+        int head_y1 = 0;
+        int head_x2 = 0;
+        int head_y2 = 0;
     };
 
 };

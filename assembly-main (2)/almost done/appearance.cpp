@@ -43,8 +43,11 @@ void Appearance::createMenus(){
     arrowWidthAct = new QAction("Arrow Width",this);
     connect(arrowWidthAct, SIGNAL(triggered()), this, SLOT(arrowWidth()));
 
-    textColorAct = new QAction("Text Color", this);
-    connect(textColorAct, SIGNAL(triggered()), this, SLOT(textColor()));
+    textArrowColorAct = new QAction("Text Arrow Color", this);
+    connect(textArrowColorAct, SIGNAL(triggered()), this, SLOT(textArrowColor()));
+
+    textCircleColorAct = new QAction("Text Circle Color", this);
+    connect(textCircleColorAct, SIGNAL(triggered()), this, SLOT(textCircleColor()));
 
     saveAct = new QAction("Save as image", this);
     saveAct->setShortcut(tr("Ctrl+Shift+S"));
@@ -64,7 +67,8 @@ void Appearance::createMenus(){
     optionMenu->addAction(circleWidthAct);
     optionMenu->addAction(arrowPenColorAct);
     optionMenu->addAction(arrowWidthAct);
-    optionMenu->addAction(textColorAct);
+    optionMenu->addAction(textArrowColorAct);
+    optionMenu->addAction(textCircleColorAct);
 
     menuBar()->addMenu(file);
     menuBar()->addMenu(optionMenu);
@@ -183,11 +187,21 @@ void Appearance::arrowWidth()
     scribbleArea->redraw();
 }
 
-void Appearance::textColor() {
+void Appearance::textArrowColor() {
     QColor newColor = QColorDialog::getColor();
 
     if (newColor.isValid()) {
-        Text.setTextColor(newColor);
+        Text.setArrowTextColor(newColor);
+    }
+
+    scribbleArea->redraw();
+}
+
+void Appearance::textCircleColor() {
+    QColor newColor = QColorDialog::getColor();
+
+    if (newColor.isValid()) {
+        Text.setCircleTextColor(newColor);
     }
 
     scribbleArea->redraw();

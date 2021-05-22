@@ -26,7 +26,8 @@ private slots:
     void circleBrushColor();
     void arrowPenColor();
     void arrowWidth();
-    void textColor();
+    void textArrowColor();
+    void textCircleColor();
     bool maybeSave();
     void closeEvent(QCloseEvent *event);
     void clickedSetTextButton();
@@ -47,7 +48,8 @@ private:
     QAction *circleWidthAct;
     QAction *arrowPenColorAct;
     QAction *arrowWidthAct;
-    QAction *textColorAct;
+    QAction *textArrowColorAct;
+    QAction *textCircleColorAct;
     QAction *saveAct;
     QAction *saveToTexAct;
     QToolBar *toolbar;

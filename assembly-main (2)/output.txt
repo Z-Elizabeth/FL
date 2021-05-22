@@ -1,18 +1,37 @@
 \documentclass[12pt]{article}
 \usepackage{tikz}
 \begin{document}
-\definecolor{arrowPenColor}{rgb}{0.31, 0.42, 0.69}
-\definecolor{roundPenColor}{rgb}{0.19, 0.51, 0.51}
-\definecolor{roundBrushColor}{rgb}{0.69, 1, 0.47}
-\definecolor{textColor}{rgb}{0.51, 0.51, 0.28}
+\definecolor{arrowPenColor}{rgb}{0, 0, 0}
+\definecolor{roundPenColor}{rgb}{0, 0, 0.07}
+\definecolor{roundBrushColor}{rgb}{1, 1, 1}
+\definecolor{textCircleColor}{rgb}{1, 0, 0}
+\definecolor{textArrowColor}{rgb}{0.67, 0.67, 0.5}
 \begin{center}
 	\begin{tikzpicture}[scale=0.03]
-		\draw [line width = 4, arrowPenColor] (123,-236) -- (269,-135);
-		\draw[textColor](196,-185) node [below] {$2$};
-		\draw[line width = 4, roundPenColor, fill = roundBrushColor](114, -236) circle(25);
-		\draw[textColor](114, -236) node {$1$};
-		\draw[line width = 4, roundPenColor, fill = roundBrushColor](269, -129) circle(25);
-		\draw[textColor](269, -129) node {$2$};
+		\draw [line width = 1, arrowPenColor] (133,-133) -- (263,-102);
+		\draw [line width = 1, arrowPenColor] (245,-95) -- (263,-102);
+		\draw [line width = 1, arrowPenColor] (248,-117) -- (263,-102);
+		\draw[textArrowColor](198,-117) node [below] {$asd$};
+		\draw [line width = 1, arrowPenColor] (288,-97) -- (276,-205);
+		\draw [line width = 1, arrowPenColor] (289,-188) -- (276,-205);
+		\draw [line width = 1, arrowPenColor] (267,-188) -- (276,-205);
+		\draw[textArrowColor](282,-151) node [below] {$asd$};
+		\draw [line width = 1, arrowPenColor] (274,-230) -- (125,-225);
+		\draw [line width = 1, arrowPenColor] (142,-237) -- (125,-225);
+		\draw [line width = 1, arrowPenColor] (140,-214) -- (125,-225);
+		\draw[textArrowColor](199,-227) node [below] {$asd$};
+		\draw [line width = 1, arrowPenColor] (101,-225) -- (124,-156);
+		\draw [line width = 1, arrowPenColor] (109,-166) -- (124,-156);
+		\draw [line width = 1, arrowPenColor] (129,-176) -- (124,-156);
+		\draw[textArrowColor](112,-190) node [below] {$asd$};
+		\draw[line width = 1, roundPenColor, fill = roundBrushColor](101, -225) circle(25);
+		\draw[textCircleColor](101, -225) node {$asd$};
+		\draw[line width = 1, roundPenColor, fill = roundBrushColor](288, -97) circle(25);
+		\draw[textCircleColor](288, -97) node {$asd$};
+		\draw[line width = 1, roundPenColor, fill = roundBrushColor](274, -230) circle(25);
+		\draw[textCircleColor](274, -230) node {$asd$};
+		\draw[line width = 1, roundPenColor, fill = roundBrushColor](133, -133) circle(25);
+		\draw[textCircleColor](133, -133) node {$asd$};
 	\end{tikzpicture}
 \end{center}
 \end{document}

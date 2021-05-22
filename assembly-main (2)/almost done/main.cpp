@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "appearance.h"
-#include "circle.h"
 //#include "menu.h"
 
 #include <QApplication>
@@ -13,8 +12,7 @@ int main(int argc, char *argv[])
 
     window.setWindowIcon(QIcon("../../../myapp.ico"));
 
-    circle Circle;
-
     window.show();
+
     return app.exec();
 }

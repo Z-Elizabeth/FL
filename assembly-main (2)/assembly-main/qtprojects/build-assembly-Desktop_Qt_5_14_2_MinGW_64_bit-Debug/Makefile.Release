@@ -3242,10 +3242,7 @@ release/main.o: ../../../almost\ done/main.cpp ../../../almost\ done/mainwindow.
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qwhatsthis.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qwidgetaction.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qwizard.h \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qtwidgetsversion.h \
-		../../../almost\ done/circle.h \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtGui/QColor \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/QPoint
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qtwidgetsversion.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o "..\..\..\almost done\main.cpp"
 
 release/mainwindow.o: ../../../almost\ done/mainwindow.cpp ../../../almost\ done/mainwindow.h \

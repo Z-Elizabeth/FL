@@ -58,9 +58,13 @@ void arrow::clearArrows() {
     numCurArrow = -1;
 }
 
-void arrow::deleteArrow(int &i){
-    listArrows.erase(listArrows.begin()+i);
-    listHeads.erase(listHeads.begin()+i);
+void arrow::deleteArrow(std::vector<int> &arrowToDelete) {
+    int size = arrowToDelete.size();
+    for (int i = 0; i < size; i++) {
+        listArrows.erase(listArrows.begin() + arrowToDelete[i] - i);
+        listHeads.erase(listHeads.begin() + arrowToDelete[i] - i);
+        Text.listArrowTexts.erase(Text.listArrowTexts.begin() + arrowToDelete[i] - i);
+    }
 }
 
 void arrow::addBeginPointArrow(const QPoint &beginPoint) {
@@ -86,14 +90,16 @@ void arrow::addEndPointArrow(const QPoint &endPoint) {
 
 void arrow::checkNearArrow(std::vector<std::pair<QPoint,int>> &rect) {
     int size = listArrows.size();
+    std::vector<int> arrowToDelete;
     if(size > 0){
         for(int i = 0; i < size; i++){
             if (((listArrows[i].first.x() >= rect[0].first.x()) && (listArrows[i].first.x() <= rect[0].first.x() + rect[0].second)
                  && (listArrows[i].first.y() >= rect[0].first.y()) && (listArrows[i].first.y() <= rect[0].first.y() + rect[0].second))
                     || ((listArrows[i].second.x() >= rect[0].first.x()) && (listArrows[i].second.x() <= rect[0].first.x() + rect[0].second)
                         && (listArrows[i].second.y() >= rect[0].first.y()) && (listArrows[i].second.y() <= rect[0].first.y() + rect[0].second))) {
-                deleteArrow(i);
+                arrowToDelete.push_back(i);
             }
         }
     }
+    deleteArrow(arrowToDelete);
 }

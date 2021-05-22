@@ -3,18 +3,7 @@
 
 text::text(QGraphicsItem *parent)
     : QGraphicsTextItem(parent)
-{
-    setFlag(QGraphicsItem::ItemIsMovable);
-    setFlag(QGraphicsItem::ItemIsSelectable);
-}
-
-QVariant text::itemChange(GraphicsItemChange change,
-                     const QVariant &value)
-{
-    //if (change == QGraphicsItem::ItemSelectedHasChanged)
-        //emit selectedChange(this);
-    return value;
-}
+{}
 
 QString text::getTextString() {
     return textString;
@@ -24,12 +13,20 @@ void text::setTextString(const QString &textStr) {
     textString = textStr;
 }
 
-QColor text::getTextColor() {
-    return textColor;
+QColor text::getArrowTextColor() {
+    return textArrowColor;
 }
 
-void text::setTextColor(const QColor &color) {
-    textColor = color;
+QColor text::getCircleTextColor() {
+    return textCircleColor;
+}
+
+void text::setCircleTextColor(const QColor &color) {
+    textCircleColor = color;
+}
+
+void text::setArrowTextColor(const QColor &color) {
+    textArrowColor = color;
 }
 
 void text::clearTexts() {
@@ -41,5 +38,6 @@ void text::clearTexts() {
     for(int i=size-1; i>=0; i--) {
        listCircleTexts.erase(listCircleTexts.begin()+i);
     }
+    textString = "";
 }
 

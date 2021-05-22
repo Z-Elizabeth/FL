@@ -17,7 +17,7 @@ public:
     void setArrowFirstPoint(const QPoint &newPoint);
     void setArrowPenWidth(const int &newWidth);
     void clearArrows();
-    void deleteArrow(int &i);
+    void deleteArrow(std::vector<int> &i);
     void addBeginPointArrow(const QPoint &beginPoint);
     void addEndPointArrow(const QPoint &endPoint);
     void mousePressEventArrow();

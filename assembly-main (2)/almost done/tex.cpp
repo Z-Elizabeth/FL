@@ -46,6 +46,10 @@ void tex::convertToTex() {
     string y1_string;
     string y2_string;
     string r_string;
+    string head_x1_string;
+    string head_y1_string;
+    string head_x2_string;
+    string head_y2_string;
 
     vector <Line> lines;
     vector <Round> rounds;
@@ -65,7 +69,7 @@ void tex::convertToTex() {
     float roundBrushGreen;
     float roundBrushBlue;
     string roundWidth_str;
-    float roundWidth;
+    float roundWidth = 0;
     string arrowPenColor;
     char arrowRed_c[2];
     char arrowGreen_c[2];
@@ -74,14 +78,21 @@ void tex::convertToTex() {
     float arrowGreen;
     float arrowBlue;
     string arrowWidth_str;
-    float arrowWidth;
-    string textColor;
-    char textRed_c[2];
-    char textGreen_c[2];
-    char textBlue_c[2];
-    float textRed;
-    float textGreen;
-    float textBlue;
+    float arrowWidth = 0;
+    string textCircleColor;
+    char textCircleRed_c[2];
+    char textCircleGreen_c[2];
+    char textCircleBlue_c[2];
+    float textCircleRed;
+    float textCircleGreen;
+    float textCircleBlue;
+    string textArrowColor;
+    char textArrowRed_c[2];
+    char textArrowGreen_c[2];
+    char textArrowBlue_c[2];
+    float textArrowRed;
+    float textArrowGreen;
+    float textArrowBlue;
 
     if (input.is_open()) {
 
@@ -111,11 +122,11 @@ void tex::convertToTex() {
 
         getline(input, roundWidth_str, '|');
 
-        for (int i = 0; i < roundWidth_str.size(); i++) {
-                int a = pow(10, roundWidth_str.size() - i - 1);
+        int size = roundWidth_str.size();
+        for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
                 roundWidth += a * (int(roundWidth_str[i] - '0'));
         }
-        roundWidth = roundWidth;
 
         getline(input, arrowPenColor, '|');
         arrowRed_c[0] = arrowPenColor[1];
@@ -131,23 +142,35 @@ void tex::convertToTex() {
 
         getline(input, arrowWidth_str, '|');
 
-        for (int i = 0; i < arrowWidth_str.size(); i++) {
-                int a = pow(10, arrowWidth_str.size() - i - 1);
+        size = arrowWidth_str.size();
+        for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
                 arrowWidth += a * (int(arrowWidth_str[i] - '0'));
         }
-        arrowWidth = arrowWidth;
 
-        getline(input, textColor, '\n');
-        textRed_c[0] = textColor[1];
-        textRed_c[1] = textColor[2];
-        textGreen_c[0] = textColor[3];
-        textGreen_c[1] = textColor[4];
-        textBlue_c[0] = textColor[5];
-        textBlue_c[1] = textColor[6];
+        getline(input, textCircleColor, '|');
+        textCircleRed_c[0] = textCircleColor[1];
+        textCircleRed_c[1] = textCircleColor[2];
+        textCircleGreen_c[0] = textCircleColor[3];
+        textCircleGreen_c[1] = textCircleColor[4];
+        textCircleBlue_c[0] = textCircleColor[5];
+        textCircleBlue_c[1] = textCircleColor[6];
         //convert to TeX color rgb format
-        textRed = convertHexToTexDec(textRed_c);
-        textGreen = convertHexToTexDec(textGreen_c);
-        textBlue = convertHexToTexDec(textBlue_c);
+        textCircleRed = convertHexToTexDec(textCircleRed_c);
+        textCircleGreen = convertHexToTexDec(textCircleGreen_c);
+        textCircleBlue = convertHexToTexDec(textCircleBlue_c);
+
+        getline(input, textArrowColor, '\n');
+        textArrowRed_c[0] = textArrowColor[1];
+        textArrowRed_c[1] = textArrowColor[2];
+        textArrowGreen_c[0] = textArrowColor[3];
+        textArrowGreen_c[1] = textArrowColor[4];
+        textArrowBlue_c[0] = textArrowColor[5];
+        textArrowBlue_c[1] = textArrowColor[6];
+        //convert to TeX color rgb format
+        textArrowRed = convertHexToTexDec(textArrowRed_c);
+        textArrowGreen = convertHexToTexDec(textArrowGreen_c);
+        textArrowBlue = convertHexToTexDec(textArrowBlue_c);
 
     }
 
@@ -160,29 +183,67 @@ void tex::convertToTex() {
             getline(input, x1_string, '|');
             getline(input, y1_string, '|');
             getline(input, x2_string, '|');
-            getline(input, y2_string, '\n');
+            getline(input, y2_string, '|');
+            getline(input, head_x1_string, '|');
+            getline(input, head_y1_string, '|');
+            getline(input, head_x2_string, '|');
+            getline(input, head_y2_string, '\n');
 
-            for (int i = 0; i < x1_string.size(); i++) {
-                int a = pow(10, x1_string.size() - i - 1);
+            int size = x1_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
                 line.x1 += a * (int(x1_string[i] - '0'));
             }
 
-            for (int i = 0; i < y1_string.size(); i++) {
-                int a = pow(10, y1_string.size() - i - 1);
+            size = y1_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
                 line.y1 += a * (int(y1_string[i] - '0'));
             }
             line.y1=-line.y1;
 
-            for (int i = 0; i < x2_string.size(); i++) {
-                int a = pow(10, x2_string.size() - i - 1);
+            size = x2_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
                 line.x2 += a * (int(x2_string[i] - '0'));
             }
 
-            for (int i = 0; i < y2_string.size(); i++) {
-                int a = pow(10, y2_string.size() - i - 1);
+            size = y2_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
                 line.y2 += a * (int(y2_string[i] - '0'));
             }
+
             line.y2 = -line.y2;
+
+            size = head_x1_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
+                line.head_x1 += a * (int(head_x1_string[i] - '0'));
+            }
+
+            size = head_y1_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
+                line.head_y1 += a * (int(head_y1_string[i] - '0'));
+            }
+
+            line.head_y1 = - line.head_y1;
+
+            size = head_x2_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
+                line.head_x2 += a * (int(head_x2_string[i] - '0'));
+            }
+
+            size = head_y2_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
+                line.head_y2 += a * (int(head_y2_string[i] - '0'));
+            }
+
+            line.head_y2 = - line.head_y2;
+
             line.name = name;
 
             lines.push_back(line);
@@ -195,20 +256,23 @@ void tex::convertToTex() {
             getline(input, r_string, '\n');
             struct Round round;
 
-            for (int i = 0; i < x1_string.size(); i++) {
-                int a = pow(10, x1_string.size() - i - 1);
+            int size = x1_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
                 round.x += a * (int(x1_string[i] - '0'));
             }
 
-            for (int i = 0; i < y1_string.size(); i++) {
-                int a = pow(10, y1_string.size() - i - 1);
+            size = y1_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
                 round.y += a * (int(y1_string[i] - '0'));
             }
 
             round.y = -round.y;
 
-            for (int i = 0; i < r_string.size(); i++) {
-                int a = pow(10, r_string.size() - i - 1);
+            size = r_string.size();
+            for (int i = 0; i < size; i++) {
+                int a = pow(10, size - i - 1);
                 round.r += a * (int(r_string[i] - '0'));
             }
 
@@ -227,23 +291,25 @@ void tex::convertToTex() {
     output << "\\definecolor{arrowPenColor}{rgb}{" << arrowRed << ", " << arrowGreen << ", " << arrowBlue << "}" << endl;
     output << "\\definecolor{roundPenColor}{rgb}{" << roundRed << ", " << roundGreen << ", " << roundBlue << "}" << endl;
     output << "\\definecolor{roundBrushColor}{rgb}{" << roundBrushRed << ", " << roundBrushGreen << ", " << roundBrushBlue << "}" << endl;
-    output << "\\definecolor{textColor}{rgb}{" << textRed << ", " << textGreen << ", " << textBlue << "}" << endl;
+    output << "\\definecolor{textCircleColor}{rgb}{" << textCircleRed << ", " << textCircleGreen << ", " << textCircleBlue << "}" << endl;
+    output << "\\definecolor{textArrowColor}{rgb}{" << textArrowRed << ", " << textArrowGreen << ", " << textArrowBlue << "}" << endl;
     output << "\\begin{center}\n\t\\begin{tikzpicture}[scale=0.03]" << endl;
 
     for (auto el : lines) {
-        //double alpha = atan((el.y2 - el.y1) / (el.x2 - el.x1));
         output << "\t\t\\draw [line width = " << arrowWidth << ", arrowPenColor] (" <<
                                                         el.x1 << "," << el.y1 << ") -- (" << el.x2 << "," << el.y2 << ");" << endl;
-        output << "\t\t\\draw[textColor](" << (el.x2 + el.x1)/2 << "," << (el.y2 + el.y1)/2 << ") node [below] {$" << el.name << "$};" << endl;
-        //output << "\t\t\\fill [black] (" << el.x2 << "," << el.y2 << ") -- (" << el.x2 - cos(0.52 + alpha) << "," << el.y2 - sin(0.52 + alpha)
-               //<< ") -- (" << el.x2 - cos(alpha - 0.52) << "," << el.y2 - sin(alpha - 0.52) << ");" << endl;
+        output << "\t\t\\draw [line width = " << arrowWidth << ", arrowPenColor] (" <<
+                                                        el.head_x1 << "," << el.head_y1 << ") -- (" << el.x2 << "," << el.y2 << ");" << endl;
+        output << "\t\t\\draw [line width = " << arrowWidth << ", arrowPenColor] (" <<
+                                                        el.head_x2 << "," << el.head_y2 << ") -- (" << el.x2 << "," << el.y2 << ");" << endl;
+        output << "\t\t\\draw[textArrowColor](" << (el.x2 + el.x1)/2 << "," << (el.y2 + el.y1)/2 << ") node [below] {$" << el.name << "$};" << endl;
     }
 
     for (auto el : rounds) {
 
         output << "\t\t\\draw[line width = " << roundWidth << ", roundPenColor, fill = roundBrushColor](" << el.x <<
                                                         ", " << el.y << ") circle(" << el.r << ");\n";
-        output << "\t\t\\draw[textColor](" << el.x << ", " << el.y << ") node {$" << el.name << "$};" << endl;
+        output << "\t\t\\draw[textCircleColor](" << el.x << ", " << el.y << ") node {$" << el.name << "$};" << endl;
     }
 
     output << "\t\\end{tikzpicture}" << endl << "\\end{center}" << endl;

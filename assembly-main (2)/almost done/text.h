@@ -13,15 +13,15 @@ public:
     void clearTexts();
     QString getTextString();
     void setTextString(const QString &textStr);
-    void setTextColor(const QColor &color);
-    QColor getTextColor();
-
-signals:
+    void setArrowTextColor(const QColor &color);
+    void setCircleTextColor(const QColor &color);
+    QColor getArrowTextColor();
+    QColor getCircleTextColor();
 
 protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     QString textString;
-    QColor textColor;
+    QColor textArrowColor;
+    QColor textCircleColor;
 };
 
 #endif // TEXT_H
