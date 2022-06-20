@@ -9,3 +9,5 @@
 
 ## Сборка
 Предпочтительной является сборка с помощью утилиты QMake внутри фреймворка Qt.
+
+See Formal languages.pdf for details
